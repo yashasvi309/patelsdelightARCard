@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patel's Delights - WebAR Experience</title>
+  
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: transparent !important;
+    }
+    
+    .font-serif-luxury { font-family: 'Cinzel', serif; }
+
+    .glass-panel {
+      background: rgba(18, 12, 8, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+    }
+
+    .glass-button {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(255, 255, 255, 0.03) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-button:active {
+      background: rgba(212, 175, 55, 0.3);
+      transform: scale(0.96);
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.4); border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-transparent text-white">
+
+  <!-- AR Scene -->
+  <a-scene 
+    mindar-image="imageTargetSrc: ./targets.mind; uiScanning: #custom-scanning-overlay;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights: true, alpha: true" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false"
+    embedded>
+    
+    <a-assets>
+      <video id="promoVideo" src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-a-gourmet-plate-being-prepared-41547-large.mp4" preload="auto" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Physical Card Anchor -->
+    <a-entity id="arTarget" mindar-image-target="targetIndex: 0">
+      <a-video src="#promoVideo" width="1" height="0.65" position="0 0 0" rotation="0 0 0"></a-video>
+    </a-entity>
+  </a-scene>
+
+  <!-- Custom Scanning Overlay -->
+  <div id="custom-scanning-overlay" class="fixed inset-0 pointer-events-none z-40 flex flex-col items-center justify-between p-8">
+    <div class="glass-panel px-6 py-3 rounded-full flex items-center space-x-3 mt-4">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-ping"></span>
+      <p class="text-xs uppercase tracking-[0.2em] text-amber-200 font-medium">Point Camera at Patel's Delights Card</p>
+    </div>
+    
+    <div class="w-64 h-64 border border-[#D4AF37]/30 rounded-2xl relative flex items-center justify-center">
+      <div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#D4AF37]"></div>
+      <div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#D4AF37]"></div>
+      <div class="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#D4AF37]"></div>
+      <div class="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#D4AF37]"></div>
+    </div>
+
+    <p class="text-xs text-amber-200/70 tracking-widest uppercase">KACHIGUDA • HYDERABAD</p>
+  </div>
+
+  <!-- AR Spatial Buttons -->
+  <div id="ar-ui-container" class="fixed inset-0 pointer-events-none z-30 flex flex-col justify-end p-6 transition-opacity duration-700 opacity-0">
+    <div class="max-w-md mx-auto w-full space-y-3 pointer-events-auto">
+      
+      <!-- Card Title Overlay Header -->
+      <div class="glass-panel p-4 rounded-2xl flex items-center justify-between border-b border-[#D4AF37]/40">
+        <div>
+          <h1 class="font-serif-luxury text-lg text-amber-100 font-bold tracking-wide">PATEL'S DELIGHTS</h1>
+          <p class="text-[10px] text-amber-200/70 tracking-widest uppercase">Sweets • Savouries • South Indian</p>
+        </div>
+        <button id="muteToggleBtn" class="w-10 h-10 rounded-full glass-button flex items-center justify-center text-amber-200">
+          <svg id="speakerIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Action Buttons Grid -->
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="openMenuModal()" class="glass-button p-4 rounded-2xl flex flex-col items-start justify-between">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-[#D4AF37]/30 flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="block text-[10px] text-amber-200/60 uppercase tracking-wider">Explore</span>
+            <span class="font-serif-luxury text-sm font-semibold text-amber-100">View Menu</span>
+          </div>
+        </button>
+
+        <button onclick="openLocationModal()" class="glass-button p-4 rounded-2xl flex flex-col items-start justify-between">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-[#D4AF37]/30 flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="block text-[10px] text-amber-200/60 uppercase tracking-wider">Kachiguda</span>
+            <span class="font-serif-luxury text-sm font-semibold text-amber-100">Get Location</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Modal -->
+  <div id="menuModal" class="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="menuContent" class="glass-panel w-full max-w-lg rounded-t-3xl p-6 max-h-[75vh] flex flex-col transform translate-y-full transition-transform duration-300 border-t border-[#D4AF37]/50">
+      <div class="flex items-center justify-between pb-3 border-b border-amber-500/20">
+        <h2 class="font-serif-luxury text-xl text-amber-100 font-bold">Patel's Specials</h2>
+        <button onclick="closeMenuModal()" class="w-8 h-8 rounded-full glass-button text-amber-200">✕</button>
+      </div>
+      <div class="overflow-y-auto my-4 space-y-3 pr-1">
+        <div class="p-3 rounded-xl bg-black/40 border border-amber-500/20 flex justify-between items-start">
+          <div>
+            <h3 class="font-serif-luxury text-sm text-amber-100">Special Kaju Katli</h3>
+            <p class="text-xs text-stone-400">Pure cashew sweets made with organic ghee.</p>
+          </div>
+          <span class="font-serif-luxury text-amber-300 font-semibold text-sm">₹450</span>
+        </div>
+        <div class="p-3 rounded-xl bg-black/40 border border-amber-500/20 flex justify-between items-start">
+          <div>
+            <h3 class="font-serif-luxury text-sm text-amber-100">Hyderabadi Savouries & Mixture</h3>
+            <p class="text-xs text-stone-400">Authentic spicy snack mix.</p>
+          </div>
+          <span class="font-serif-luxury text-amber-300 font-semibold text-sm">₹180</span>
+        </div>
+        <div class="p-3 rounded-xl bg-black/40 border border-amber-500/20 flex justify-between items-start">
+          <div>
+            <h3 class="font-serif-luxury text-sm text-amber-100">Premium Festival Gift Hamper</h3>
+            <p class="text-xs text-stone-400">Assorted dry fruits, sweets & savouries box.</p>
+          </div>
+          <span class="font-serif-luxury text-amber-300 font-semibold text-sm">₹1,200</span>
+        </div>
+      </div>
+      <a href="tel:+919876543210" class="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-black font-bold text-center tracking-wider text-xs">ORDER VIA PHONE</a>
+    </div>
+  </div>
+
+  <!-- Location Modal -->
+  <div id="locationModal" class="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="locationContent" class="glass-panel w-full max-w-lg rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300 border-t border-[#D4AF37]/50">
+      <div class="flex items-center justify-between pb-3 border-b border-amber-500/20">
+        <h2 class="font-serif-luxury text-xl text-amber-100 font-bold">Contact & Location</h2>
+        <button onclick="closeLocationModal()" class="w-8 h-8 rounded-full glass-button text-amber-200">✕</button>
+      </div>
+      <div class="my-4 space-y-2 text-sm text-stone-300">
+        <p><strong class="text-amber-200">Address:</strong> Kachiguda, Hyderabad-500027</p>
+        <p><strong class="text-amber-200">Phone:</strong> +91 98765 43210</p>
+        <p><strong class="text-amber-200">Email:</strong> patelsdelights@gmail.com</p>
+        <p><strong class="text-amber-200">Instagram:</strong> @patelsdelights</p>
+      </div>
+      <a href="https://maps.google.com/?q=Kachiguda+Hyderabad" target="_blank" class="block w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-black font-bold text-center tracking-wider text-xs">OPEN MAPS DIRECTIONS</a>
+    </div>
+  </div>
+
+  <!-- Target Detection Logic -->
+  <script>
+    const arTarget = document.querySelector('#arTarget');
+    const arUiContainer = document.querySelector('#ar-ui-container');
+    const customScanningOverlay = document.querySelector('#custom-scanning-overlay');
+    const promoVideo = document.querySelector('#promoVideo');
+    const muteToggleBtn = document.querySelector('#muteToggleBtn');
+    const speakerIcon = document.querySelector('#speakerIcon');
+
+    let isMuted = true;
+    promoVideo.muted = true;
+
+    arTarget.addEventListener('targetFound', () => {
+      customScanningOverlay.style.display = 'none';
+      arUiContainer.classList.remove('opacity-0');
+      promoVideo.play().catch(e => console.log("Autoplay blocked", e));
+    });
+
+    arTarget.addEventListener('targetLost', () => {
+      customScanningOverlay.style.display = 'flex';
+      arUiContainer.classList.add('opacity-0');
+      promoVideo.pause();
+    });
+
+    muteToggleBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      promoVideo.muted = isMuted;
+      speakerIcon.innerHTML = !isMuted 
+        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`
+        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>`;
+    });
+
+    function openMenuModal() {
+      document.getElementById('menuModal').classList.remove('opacity-0', 'pointer-events-none');
+      document.getElementById('menuContent').classList.remove('translate-y-full');
+    }
+    function closeMenuModal() {
+      document.getElementById('menuContent').classList.add('translate-y-full');
+      document.getElementById('menuModal').classList.add('opacity-0', 'pointer-events-none');
+    }
+    function openLocationModal() {
+      document.getElementById('locationModal').classList.remove('opacity-0', 'pointer-events-none');
+      document.getElementById('locationContent').classList.remove('translate-y-full');
+    }
+    function closeLocationModal() {
+      document.getElementById('locationContent').classList.add('translate-y-full');
+      document.getElementById('locationModal').classList.add('opacity-0', 'pointer-events-none');
+    }
+  </script>
+</body>
+</html>
